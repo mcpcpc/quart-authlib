@@ -39,7 +39,7 @@ def normalize_twitter_userinfo(client, data):
 
 
 oauth.register(
-    name='twitter',
+    name='x',
     api_base_url='https://api.x.com/1.1/',
     request_token_url='https://api.x.com/oauth/request_token',
     access_token_url='https://api.x.com/oauth/access_token',
