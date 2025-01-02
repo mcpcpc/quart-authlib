@@ -164,6 +164,11 @@ There should be a `id_token` in the response. Authlib has called *.parse_id_toke
 userinfo = token['userinfo']
 ```
 
+## Examples
+
+See the [examples](docs/examples) directory.
+
+
 ## Contributing
 
 Please create a new [Issue](https://github.com/mcpcpc/quart-authlib/issues/new) or [Pull Request](https://github.com/mcpcpc/quart-authlib/compare).
