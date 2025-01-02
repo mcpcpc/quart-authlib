@@ -82,6 +82,63 @@ Here is a full list of the configuration keys:
 
 We suggest that you keep ONLY `{name}_CLIENT_ID` and `{name}_CLIENT_SECRET` in your Quart application configuration.
 
+### Routes for Authorization
+
+Routes for authorization should look like:
+
+```python
+from flask import url_for, redirect
+
+@app.route('/login')
+def login():
+    redirect_uri = url_for('authorize', _external=True)
+    return oauth.twitter.authorize_redirect(redirect_uri)
+
+@app.route('/authorize')
+def authorize():
+    token = oauth.twitter.authorize_access_token()
+    resp = oauth.twitter.get('account/verify_credentials.json')
+    resp.raise_for_status()
+    profile = resp.json()
+    # do something with the token and profile
+    return redirect('/')
+```
+
+### Accessing OAuth Resources
+
+Just like above example, we don’t need to pass the `request` parameter, everything is handled by Authlib automatically:
+
+```python
+from flask import render_template
+
+@app.route('/github')
+def show_github_profile():
+    resp = oauth.github.get('user')
+    resp.raise_for_status()
+    profile = resp.json()
+    return render_template('github.html', profile=profile)
+```
+
+In this case, our `fetch_token` could look like:
+
+```python
+from your_project import current_user
+
+def fetch_token(name):
+    if name in OAUTH1_SERVICES:
+        model = OAuth1Token
+    else:
+        model = OAuth2Token
+    token = model.find(
+        name=name,
+        user=current_user,
+    )
+    return token.to_token()
+
+# initialize the OAuth registry with this fetch_token function
+oauth = OAuth(fetch_token=fetch_token)
+```
+
 ### OpenID Connect Client
 
 An OpenID Connect client is no different than a normal OAuth 2.0 client. When registered with `openid` scope, the built-in OAuth client will handle everything automatically:
