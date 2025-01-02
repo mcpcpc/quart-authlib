@@ -30,10 +30,3 @@ changelog = "https://github.com/mcpcpc/quart-authlib/blob/master/CHANGELOG.md"
 
 [tool.setuptools.dynamic]
 version = {attr = "quart_authlib.__version__"}
-
-[tool.setuptools]
-packages = ["quart_authlib"]
-
-[tool.coverage.run]
-branch = true
-source = ["quart_authlib"]
