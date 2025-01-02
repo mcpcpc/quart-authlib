@@ -23,6 +23,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
+[project.optional-dependencies]
+cache = ["cachelib"]
+dev = ["black"]
 
 [project.urls]
 repository = "https://github.com/mcpcpc/quart-authlib"
