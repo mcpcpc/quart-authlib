@@ -1,6 +1,6 @@
-# Google login demo with Quart
+# Multi-platform OAuth demo with Quart
 
-You can learn Quart OAuth 2.0 client implementation with this demo.
+You can learn multi-platform OAuth 2.0 client (i.e. Google and X) implementation with this demo.
 
 ## Install
 
@@ -12,7 +12,7 @@ Install the required dependencies:
 
 Create your Google OAuth Client at <https://console.cloud.google.com/apis/credentials>, make sure to add `http://127.0.0.1:5000/auth` into Authorized redirect URIs.
 
-Fill the given client ID and secret into `config.py`.
+Fill the given client IDs and secrets for X and Google into `config.py`.
 
 ## Run
 
