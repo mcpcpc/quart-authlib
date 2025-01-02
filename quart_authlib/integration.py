@@ -6,7 +6,7 @@ from quart.signals import Namespace
 from authlib.integrations.base_client import FrameworkIntegration
 
 _signal = Namespace()
-token_update = _signal.signal('token_update')
+token_update = _signal.signal("token_update")
 
 
 class QuartIntegration(FrameworkIntegration):
@@ -23,7 +23,7 @@ class QuartIntegration(FrameworkIntegration):
     def load_config(oauth, name, params):
         rv = {}
         for k in params:
-            conf_key = f'{name}_{k}'.upper()
+            conf_key = f"{name}_{k}".upper()
             v = oauth.app.config.get(conf_key, None)
             if v is not None:
                 rv[k] = v

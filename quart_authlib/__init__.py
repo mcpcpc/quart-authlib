@@ -20,7 +20,8 @@ class OAuth(BaseOAuth):
 
     def __init__(self, app=None, cache=None, fetch_token=None, update_token=None):
         super().__init__(
-            cache=cache, fetch_token=fetch_token, update_token=update_token)
+            cache=cache, fetch_token=fetch_token, update_token=update_token
+        )
         self.app = app
         if app:
             self.init_app(app)
@@ -39,12 +40,12 @@ class OAuth(BaseOAuth):
         if update_token:
             self.update_token = update_token
 
-        app.extensions = getattr(app, 'extensions', {})
-        app.extensions['quart_authlib'] = self
+        app.extensions = getattr(app, "extensions", {})
+        app.extensions["quart_authlib"] = self
 
     def create_client(self, name):
         if not self.app:
-            raise RuntimeError('OAuth is not init with Quart app.')
+            raise RuntimeError("OAuth is not init with Quart app.")
         return super().create_client(name)
 
     def register(self, name, overwrite=False, **kwargs):
@@ -55,7 +56,10 @@ class OAuth(BaseOAuth):
 
 
 __all__ = [
-    'OAuth', 'FlaskIntegration',
-    'QuartOAuth1App', 'QuartOAuth2App',
-    'token_update', 'OAuthError',
+    "OAuth",
+    "FlaskIntegration",
+    "QuartOAuth1App",
+    "QuartOAuth2App",
+    "token_update",
+    "OAuthError",
 ]
