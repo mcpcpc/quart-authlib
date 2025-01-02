@@ -8,7 +8,7 @@ A Quart extension for the Authlib library. This is an adoption from the existing
 
 ### PyPI
 
-Install and/or update using pip:
+Install and update using pip:
 
 ```shell
 pip install -U quart-authlib
@@ -166,7 +166,7 @@ userinfo = token['userinfo']
 
 ## Contributing
 
-Please create a new [Issue](https://github.com/mcpcpc/quart-authlib/issues/new) or [Pull Request](https://github.com/mcpcpc/quart-authlib/compare) template.
+Please create a new [Issue](https://github.com/mcpcpc/quart-authlib/issues/new) or [Pull Request](https://github.com/mcpcpc/quart-authlib/compare).
 
 ## Resources
 
