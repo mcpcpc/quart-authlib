@@ -17,7 +17,7 @@ from authlib.integrations.requests_client import OAuth2Session
 class QuartAppMixin:
     @property
     def token(self):
-        attr = f'_oauth_token_{self.name}'
+        attr = f"_oauth_token_{self.name}"
         token = g.get(attr)
         if token:
             return token
@@ -28,18 +28,18 @@ class QuartAppMixin:
 
     @token.setter
     def token(self, token):
-        attr = f'_oauth_token_{self.name}'
+        attr = f"_oauth_token_{self.name}"
         setattr(g, attr, token)
 
     def _get_requested_token(self, *args, **kwargs):
         return self.token
 
     def save_authorize_data(self, **kwargs):
-        state = kwargs.pop('state', None)
+        state = kwargs.pop("state", None)
         if state:
             self.framework.set_state_data(session, state, kwargs)
         else:
-            raise RuntimeError('Missing state value')
+            raise RuntimeError("Missing state value")
 
     def authorize_redirect(self, redirect_uri=None, **kwargs):
         """Create a HTTP Redirect for Authorization Endpoint.
@@ -50,7 +50,7 @@ class QuartAppMixin:
         """
         rv = self.create_authorization_url(redirect_uri, **kwargs)
         self.save_authorize_data(redirect_uri=redirect_uri, **rv)
-        return redirect(rv['url'])
+        return redirect(rv["url"])
 
 
 class QuartOAuth1App(QuartAppMixin, OAuth1Mixin, BaseApp):
@@ -62,7 +62,7 @@ class QuartOAuth1App(QuartAppMixin, OAuth1Mixin, BaseApp):
         :return: A token dict.
         """
         params = request.args.to_dict(flat=True)
-        state = params.get('oauth_token')
+        state = params.get("oauth_token")
         if not state:
             raise OAuthError(description='Missing "oauth_token" parameter')
 
@@ -70,7 +70,7 @@ class QuartOAuth1App(QuartAppMixin, OAuth1Mixin, BaseApp):
         if not data:
             raise OAuthError(description='Missing "request_token" in temporary data')
 
-        params['request_token'] = data['request_token']
+        params["request_token"] = data["request_token"]
         params.update(kwargs)
         self.framework.clear_state_data(session, state)
         token = self.fetch_access_token(**params)
@@ -86,30 +86,32 @@ class QuartOAuth2App(QuartAppMixin, OAuth2Mixin, OpenIDMixin, BaseApp):
 
         :return: A token dict.
         """
-        if request.method == 'GET':
-            error = request.args.get('error')
+        if request.method == "GET":
+            error = request.args.get("error")
             if error:
-                description = request.args.get('error_description')
+                description = request.args.get("error_description")
                 raise OAuthError(error=error, description=description)
 
             params = {
-                'code': request.args.get('code'),
-                'state': request.args.get('state'),
+                "code": request.args.get("code"),
+                "state": request.args.get("state"),
             }
         else:
             params = {
-                'code': request.form.get('code'),
-                'state': request.form.get('state'),
+                "code": request.form.get("code"),
+                "state": request.form.get("state"),
             }
 
-        claims_options = kwargs.pop('claims_options', None)
-        state_data = self.framework.get_state_data(session, params.get('state'))
-        self.framework.clear_state_data(session, params.get('state'))
+        claims_options = kwargs.pop("claims_options", None)
+        state_data = self.framework.get_state_data(session, params.get("state"))
+        self.framework.clear_state_data(session, params.get("state"))
         params = self._format_state_params(state_data, params)
         token = self.fetch_access_token(**params, **kwargs)
         self.token = token
 
-        if 'id_token' in token and 'nonce' in state_data:
-            userinfo = self.parse_id_token(token, nonce=state_data['nonce'], claims_options=claims_options)
-            token['userinfo'] = userinfo
+        if "id_token" in token and "nonce" in state_data:
+            userinfo = self.parse_id_token(
+                token, nonce=state_data["nonce"], claims_options=claims_options
+            )
+            token["userinfo"] = userinfo
         return token
