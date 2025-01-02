@@ -1,0 +1,39 @@
+[project]
+name = "quart-authlib"
+description = "Quart extension for the Authlib library"
+readme = "README.md"
+license = {file = "LICENSE"}
+dynamic = ["version"]
+requires-python = ">=3.11"
+dependencies = [
+    "authlib",
+    "requests",
+    "quart"
+]
+classifiers = [
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+
+[project.urls]
+repository = "https://github.com/mcpcpc/quart-authlib"
+changelog = "https://github.com/mcpcpc/quart-authlib/blob/master/CHANGELOG.md"
+
+[tool.setuptools.dynamic]
+version = {attr = "quart_authlib.__version__"}
+
+[tool.setuptools]
+packages = ["quart_authlib"]
+
+[tool.coverage.run]
+branch = true
+source = ["quart_authlib"]
