@@ -25,8 +25,8 @@ classifiers = [
 
 
 [project.urls]
-repository = "https://github.com/mcpcpc/quart_authlib"
-changelog = "https://github.com/mcpcpc/quart_authlib/blob/master/CHANGELOG.md"
+repository = "https://github.com/mcpcpc/quart-authlib"
+changelog = "https://github.com/mcpcpc/quart-authlib/blob/master/CHANGELOG.md"
 
 [tool.setuptools.dynamic]
 version = {attr = "quart_authlib.__version__"}

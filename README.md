@@ -11,7 +11,7 @@ A Quart extension for the Authlib library. This is an adoption from the existing
 Install and/or update using pip:
 
 ```shell
-pip install -U quart_authlib
+pip install -U quart-authlib
 ```
 
 ### Repository
@@ -19,7 +19,7 @@ pip install -U quart_authlib
 When using git, clone the repository and change your present working directory.
 
 ```shell
-git clone http://github.com/mcpcpc/quart_authlib
+git clone http://github.com/mcpcpc/quart-authlib
 cd quart_authlib/
 ```
 
