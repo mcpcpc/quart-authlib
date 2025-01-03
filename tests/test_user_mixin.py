@@ -15,10 +15,12 @@ secret_key = JsonWebKey.import_key("secret", {"kty": "oct", "kid": "f"})
 
 
 class QuartUserMixinTest(IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.app = Quart(__name__)
+
     async def test_fetch_userinfo(self):
-        app = Quart(__name__)
-        app.secret_key = "!"
-        oauth = OAuth(app)
+        self.app.secret_key = "!"
+        oauth = OAuth(self.app)
         client = oauth.register(
             "dev",
             client_id="dev",
@@ -33,7 +35,7 @@ class QuartUserMixinTest(IsolatedAsyncioTestCase):
             resp.status_code = 200
             return resp
 
-        async with app.test_request_context(path="/"):
+        async with self.app.test_request_context(path="/"):
             with patch("requests.sessions.Session.send", fake_send):
                 user = client.userinfo()
                 self.assertEqual(user.sub, "123")
@@ -50,10 +52,8 @@ class QuartUserMixinTest(IsolatedAsyncioTestCase):
             exp=3600,
             nonce="n",
         )
-
-        app = Quart(__name__)
-        app.secret_key = "!"
-        oauth = OAuth(app)
+        self.app.secret_key = "!"
+        oauth = OAuth(self.app)
         client = oauth.register(
             "dev",
             client_id="dev",
@@ -63,19 +63,16 @@ class QuartUserMixinTest(IsolatedAsyncioTestCase):
             issuer="https://i.b",
             id_token_signing_alg_values_supported=["HS256", "RS256"],
         )
-        async with app.test_request_context(path="/"):
+        async with self.app.test_request_context(path="/"):
             self.assertIsNone(client.parse_id_token(token, nonce="n"))
-
             token["id_token"] = id_token
             user = client.parse_id_token(token, nonce="n")
             self.assertEqual(user.sub, "123")
-
             claims_options = {"iss": {"value": "https://i.b"}}
             user = client.parse_id_token(
                 token, nonce="n", claims_options=claims_options
             )
             self.assertEqual(user.sub, "123")
-
             claims_options = {"iss": {"value": "https://i.c"}}
             self.assertRaises(
                 InvalidClaimError, client.parse_id_token, token, "n", claims_options
@@ -92,10 +89,8 @@ class QuartUserMixinTest(IsolatedAsyncioTestCase):
             aud="dev",
             exp=3600,
         )
-
-        app = Quart(__name__)
-        app.secret_key = "!"
-        oauth = OAuth(app)
+        self.app.secret_key = "!"
+        oauth = OAuth(self.app)
         client = oauth.register(
             "dev",
             client_id="dev",
@@ -105,7 +100,7 @@ class QuartUserMixinTest(IsolatedAsyncioTestCase):
             issuer="https://i.b",
             id_token_signing_alg_values_supported=["HS256", "RS256"],
         )
-        async with app.test_request_context(path="/"):
+        async with self.app.test_request_context(path="/"):
             token["id_token"] = id_token
             user = client.parse_id_token(token, nonce="n")
             self.assertEqual(user.sub, "123")
@@ -122,10 +117,8 @@ class QuartUserMixinTest(IsolatedAsyncioTestCase):
             exp=3600,
             nonce="n",
         )
-
-        app = Quart(__name__)
-        app.secret_key = "!"
-        oauth = OAuth(app)
+        self.app.secret_key = "!"
+        oauth = OAuth(self.app)
         alt_key = secret_key.as_dict()
         alt_key["kid"] = "b"
         client = oauth.register(
@@ -137,7 +130,7 @@ class QuartUserMixinTest(IsolatedAsyncioTestCase):
             issuer="https://i.b",
             id_token_signing_alg_values_supported=["HS256"],
         )
-        async with app.test_request_context(path="/"):
+        async with self.app.test_request_context(path="/"):
             token["id_token"] = id_token
             self.assertRaises(RuntimeError, client.parse_id_token, token, "n")
 
@@ -154,10 +147,8 @@ class QuartUserMixinTest(IsolatedAsyncioTestCase):
             exp=3600,
             nonce="n",
         )
-
-        app = Quart(__name__)
-        app.secret_key = "!"
-        oauth = OAuth(app)
+        self.app.secret_key = "!"
+        oauth = OAuth(self.app)
         client = oauth.register(
             "dev",
             client_id="dev",
@@ -174,9 +165,8 @@ class QuartUserMixinTest(IsolatedAsyncioTestCase):
             resp.status_code = 200
             return resp
 
-        async with app.test_request_context(path="/"):
+        async with self.app.test_request_context(path="/"):
             self.assertIsNone(client.parse_id_token(token, nonce="n"))
-
             with patch("requests.sessions.Session.send", fake_send):
                 token["id_token"] = id_token
                 user = client.parse_id_token(token, nonce="n")
