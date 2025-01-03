@@ -3,6 +3,7 @@
 
 from unittest import IsolatedAsyncioTestCase
 from unittest import mock
+from unittest.mock import MagicMock
 
 from quart import Quart
 from quart import session
@@ -422,7 +423,6 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
             with mock.patch("requests.sessions.Session.send") as send:
                 send.return_value = mock_send_value(get_bearer_token())
                 token = await client.authorize_access_token()
-                print(f"my token: {token}")
                 self.assertEqual(token["access_token"], "a")
 
     async def test_access_token_with_fetch_token(self):
@@ -444,7 +444,7 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
         def fake_send(sess, req, **kwargs):
             auth = req.headers["Authorization"]
             self.assertEqual(auth, "Bearer {}".format(token["access_token"]))
-            resp = mock.MagicMock()
+            resp = MagicMock()
             resp.text = "hi"
             resp.status_code = 200
             return resp
@@ -485,12 +485,12 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
             if req.url == "https://i.b/token":
                 auth = req.headers["Authorization"]
                 self.assertIn("Basic", auth)
-                resp = mock.MagicMock()
+                resp = MagicMock()
                 resp.json = get_bearer_token
                 resp.status_code = 200
                 return resp
 
-            resp = mock.MagicMock()
+            resp = MagicMock()
             resp.text = "hi"
             resp.status_code = 200
             return resp
@@ -516,7 +516,7 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
         def fake_send(sess, req, **kwargs):
             auth = req.headers.get("Authorization")
             self.assertIsNone(auth)
-            resp = mock.MagicMock()
+            resp = MagicMock()
             resp.text = "hi"
             resp.status_code = 200
             return resp
