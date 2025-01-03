@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Example project for Google OpenID login.
 - Route and OAuth resources documentation in README.md.
+- Basic unit test structure.
+
+### Fixed
+
+- Multiple methods requiring asynchronous callbacks.
 
 ## [0.0.1] - 2025-01-01
 
