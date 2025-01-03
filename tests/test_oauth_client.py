@@ -22,7 +22,7 @@ from quart_authlib import QuartOAuth2App
 
 
 class QuartOAuthTest(IsolatedAsyncioTestCase):
-    def setUp(self):
+    async def asyncSetUp(self):
         self.app = Quart(__name__)
 
     async def test_register_remote_app(self):
@@ -379,7 +379,7 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
             nonce=query_data["nonce"],
         )
         path = f"/?code=a&state={state}"
-        async with app.test_request_context(path=path):
+        async with self.app.test_request_context(path=path):
             session[f"_state_dev_{state}"] = session_data
             with mock.patch("requests.sessions.Session.send") as send:
                 send.return_value = mock_send_value(token)
