@@ -404,25 +404,25 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
                 self.assertEqual(token["access_token"], "a")
                 self.assertIn("userinfo", token)
 
-    #    async def test_oauth2_access_token_with_post(self):
-    #        app = Quart(__name__)
-    #        app.secret_key = "!"
-    #        oauth = OAuth(app)
-    #        client = oauth.register(
-    #            "dev",
-    #            client_id="dev",
-    #            client_secret="dev",
-    #            api_base_url="https://i.b/api",
-    #            access_token_url="https://i.b/token",
-    #            authorize_url="https://i.b/authorize",
-    #        )
-    #        payload = {"code": "a", "state": "b"}
-    #        async with app.test_request_context(path="/", data=payload, method="POST"):
-    #            session["_state_dev_b"] = {"data": payload}
-    #            with mock.patch("requests.sessions.Session.send") as send:
-    #                send.return_value = mock_send_value(get_bearer_token())
-    #                token = await client.authorize_access_token()
-    #                self.assertEqual(token["access_token"], "a")
+        async def test_oauth2_access_token_with_post(self):
+            app = Quart(__name__)
+            app.secret_key = "!"
+            oauth = OAuth(app)
+            client = oauth.register(
+                "dev",
+                client_id="dev",
+                client_secret="dev",
+                api_base_url="https://i.b/api",
+                access_token_url="https://i.b/token",
+                authorize_url="https://i.b/authorize",
+            )
+            payload = {"code": "a", "state": "b"}
+            async with app.test_request_context(path="/", data=payload, method="POST"):
+                session["_state_dev_b"] = {"data": payload}
+                with mock.patch("requests.sessions.Session.send") as send:
+                    send.return_value = mock_send_value(get_bearer_token())
+                    token = await client.authorize_access_token()
+                    self.assertEqual(token["access_token"], "a")
 
     async def test_access_token_with_fetch_token(self):
         app = Quart(__name__)
