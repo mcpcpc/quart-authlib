@@ -57,7 +57,7 @@ class OAuth(BaseOAuth):
 
 __all__ = [
     "OAuth",
-    "FlaskIntegration",
+    "QuartIntegration",
     "QuartOAuth1App",
     "QuartOAuth2App",
     "token_update",
