@@ -24,8 +24,8 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-cache = ["cachelib"]
-dev = ["black"]
+cachelib = ["cachelib"]
+dev = ["black", "cachelib"]
 
 [project.urls]
 repository = "https://github.com/mcpcpc/quart-authlib"
