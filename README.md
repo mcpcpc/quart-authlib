@@ -61,11 +61,11 @@ The common use case for OAuth is authentication, e.g. let your users log in with
 
 Quart-Authlib OAuth registry can load the configuration from Quart `app.config` automatically. Every key-value pair in `.register` can be omitted. They can be configured in your Quart App configuration. Config keys are formatted as `{name}_{key}` in uppercase. If you register your remote app as `oauth.register('example', ...)`, the config keys would look like:
 
-| Name                        | Key                                                        |
-| --------------------------- | ---------------------------------------------------------- |
-| EXAMPLE_CLIENT_ID           | OAuth Consumer Key                                         |
-| EXAMPLE_CLIENT_SECRET       | OAuth Consumer Secret                                      |
-| EXAMPLE_ACCESS_TOKEN_URL    | URL to fetch OAuth access token                            |
+| Name                     | Key                             |
+| ------------------------ | --------------------------------|
+| EXAMPLE_CLIENT_ID        | OAuth Consumer Key              |
+| EXAMPLE_CLIENT_SECRET    | OAuth Consumer Secret           |
+| EXAMPLE_ACCESS_TOKEN_URL | URL to fetch OAuth access token |
 
 Here is a full list of the configuration keys:
 
