@@ -90,12 +90,12 @@ Routes for authorization should look like:
 from flask import url_for, redirect
 
 @app.route('/login')
-def login():
+async def login():
     redirect_uri = url_for('authorize', _external=True)
     return oauth.twitter.authorize_redirect(redirect_uri)
 
 @app.route('/authorize')
-def authorize():
+async def authorize():
     token = oauth.twitter.authorize_access_token()
     resp = oauth.twitter.get('account/verify_credentials.json')
     resp.raise_for_status()
@@ -112,11 +112,11 @@ Just like above example, we don’t need to pass the `request` parameter, everyt
 from flask import render_template
 
 @app.route('/github')
-def show_github_profile():
+async def show_github_profile():
     resp = oauth.github.get('user')
     resp.raise_for_status()
     profile = resp.json()
-    return render_template('github.html', profile=profile)
+    return await render_template('github.html', profile=profile)
 ```
 
 In this case, our `fetch_token` could look like:
