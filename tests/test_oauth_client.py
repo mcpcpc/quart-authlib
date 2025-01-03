@@ -87,7 +87,7 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
         self.assertIsNotNone(oauth.cache)
         self.assertIsNone(oauth.update_token)
 
-        oauth.init_app(app, update_token=lambda o: o)
+        oauth.init_app(self.app, update_token=lambda o: o)
         self.assertIsNotNone(oauth.update_token)
 
     async def test_create_client(self):
@@ -228,7 +228,7 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
                 token = await client.authorize_access_token()
                 self.assertEqual(token["access_token"], "a")
 
-        async with app.test_request_context(path="/"):
+        async with self.app.test_request_context(path="/"):
             self.assertEqual(client.token, None)
 
     async def test_oauth2_authorize_access_denied(self):
