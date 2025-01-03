@@ -10,7 +10,7 @@ from .integration import token_update
 from .apps import QuartOAuth1App
 from .apps import QuartOAuth2App
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 
 class OAuth(BaseOAuth):
@@ -57,7 +57,7 @@ class OAuth(BaseOAuth):
 
 __all__ = [
     "OAuth",
-    "FlaskIntegration",
+    "QuartIntegration",
     "QuartOAuth1App",
     "QuartOAuth2App",
     "token_update",

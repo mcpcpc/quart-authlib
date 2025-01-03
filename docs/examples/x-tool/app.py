@@ -1,4 +1,4 @@
-from quart import Flask
+from quart import Quart
 from quart import url_for
 from quart import request
 from quart import session
