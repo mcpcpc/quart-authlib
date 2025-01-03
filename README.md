@@ -57,7 +57,7 @@ oauth.init_app(app)
 
 The common use case for OAuth is authentication, e.g. let your users log in with Twitter, GitHub, Google etc.
 
-## Configuration
+### Configuration
 
 Quart-Authlib OAuth registry can load the configuration from Quart `app.config` automatically. Every key-value pair in `.register` can be omitted. They can be configured in your Quart App configuration. Config keys are formatted as `{name}_{key}` in uppercase. If you register your remote app as `oauth.register('example', ...)`, the config keys would look like:
 
@@ -82,12 +82,47 @@ Here is a full list of the configuration keys:
 
 We suggest that you keep ONLY `{name}_CLIENT_ID` and `{name}_CLIENT_SECRET` in your Quart application configuration.
 
+### Using Cache for Temporary Credential
+
+By default, the Quart OAuth registry will use Quart session to store OAuth 1.0 temporary credential (request token). However, in this way, there are chances your temporary credential will be exposed.
+
+Our OAuth registry provides a simple way to store temporary credentials in a cache system. When initializing OAuth, you can pass an cache instance:
+
+```python
+oauth = OAuth(app, cache=cache)
+
+# or initialize lazily
+oauth = OAuth()
+oauth.init_app(app, cache=cache)
+```
+
+An example of a cache instance can be:
+
+```python
+from quart import Quart
+
+class OAuthCache:
+
+    def __init__(self, app: Quart) -> None:
+        """Initialize the AuthCache."""
+        self.app = app
+
+    def delete(self, key: str) -> None:
+        ...
+
+    def get(self, key: str) -> str | None:
+        ...
+
+    def set(self, key: str, value: str, expires: int | None = None) -> None:
+        ...
+```
+
 ### Routes for Authorization
 
 Routes for authorization should look like:
 
 ```python
-from flask import url_for, redirect
+from quart import url_for, redirect
 
 @app.route('/login')
 async def login():
@@ -109,7 +144,7 @@ async def authorize():
 Just like above example, we don’t need to pass the `request` parameter, everything is handled by Authlib automatically:
 
 ```python
-from flask import render_template
+from quart import render_template
 
 @app.route('/github')
 async def show_github_profile():
