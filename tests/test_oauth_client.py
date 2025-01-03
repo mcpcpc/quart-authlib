@@ -6,7 +6,8 @@ from unittest import mock
 
 from quart import Quart
 from quart import session
-from authlib.jose import jwk
+#from authlib.jose import jwk
+from authlib.jose import JsonWebKey
 from authlib.oidc.core.grants.util import generate_id_token
 from authlib.common.urls import urlparse
 from authlib.common.urls import url_decode
@@ -229,7 +230,7 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
                 self.assertEqual(token['access_token'], 'a')
 
         #async with app.test_request_context():
-        async with app.test_request_context("/"):
+        async with app.test_request_context(path='/'):
             self.assertEqual(client.token, None)
 
     async def test_oauth2_authorize_access_denied(self):
@@ -245,10 +246,11 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
             authorize_url='https://i.b/authorize'
         )
 
-        with app.test_request_context(path='/?error=access_denied&error_description=Not+Allowed'):
+        async with app.test_request_context(path='/?error=access_denied&error_description=Not+Allowed'):
             # session is cleared in tests
             with mock.patch('requests.sessions.Session.send'):
-                self.assertRaises(OAuthError, await client.authorize_access_token)
+                with self.assertRaises(OAuthError):
+                    await client.authorize_access_token()
 
     async def test_oauth2_authorize_via_custom_client(self):
         class CustomRemoteApp(QuartOAuth2App):
@@ -348,7 +350,9 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
         app = Quart(__name__)
         app.secret_key = '!'
         oauth = OAuth(app)
-        key = jwk.dumps('secret', 'oct', kid='f')
+        #key = jwk.dumps('secret', 'oct', kid='f')
+        params = dict(kty='oct', kid='f')
+        key = dict(JsonWebKey.import_key('secret', params))
 
         client = oauth.register(
             'dev',
