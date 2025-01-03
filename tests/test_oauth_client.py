@@ -6,7 +6,6 @@ from unittest import mock
 
 from quart import Quart
 from quart import session
-#from authlib.jose import jwk
 from authlib.jose import JsonWebKey
 from authlib.oidc.core.grants.util import generate_id_token
 from authlib.common.urls import urlparse
@@ -134,7 +133,6 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
             authorize_url='https://i.b/authorize'
         )
 
-        #async with app.test_request_context():
         async with app.test_request_context("/"):
             with mock.patch('requests.sessions.Session.send') as send:
                 send.return_value = mock_send_value('oauth_token=foo&oauth_verifier=baz')
@@ -163,7 +161,6 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
             authorize_url='https://i.b/authorize'
         )
 
-        #async with app.test_request_context():
         async with app.test_request_context("/"):
             with mock.patch('requests.sessions.Session.send') as send:
                 send.return_value = mock_send_value('oauth_token=foo&oauth_verifier=baz')
@@ -210,7 +207,6 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
             authorize_url='https://i.b/authorize'
         )
 
-        #async with app.test_request_context():
         async with app.test_request_context("/"):
             resp = client.authorize_redirect('https://b.com/bar')
             self.assertEqual(resp.status_code, 302)
@@ -229,7 +225,6 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
                 token = await client.authorize_access_token()
                 self.assertEqual(token['access_token'], 'a')
 
-        #async with app.test_request_context():
         async with app.test_request_context(path='/'):
             self.assertEqual(client.token, None)
 
@@ -267,7 +262,6 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
             access_token_url='https://i.b/token',
             client_cls=CustomRemoteApp,
         )
-        #async with app.test_request_context():
         async with app.test_request_context("/"):
             resp = client.authorize_redirect('https://b.com/bar')
             self.assertEqual(resp.status_code, 302)
@@ -300,7 +294,6 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
                 'authorization_endpoint': 'https://i.b/authorize'
             })
 
-            #async with app.test_request_context():
             async with app.test_request_context("/"):
                 resp = client.authorize_redirect('https://b.com/bar')
                 self.assertEqual(resp.status_code, 302)
@@ -318,7 +311,6 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
             client_kwargs={'code_challenge_method': 'S256'},
         )
 
-        #async with app.test_request_context():
         async with app.test_request_context("/"):
             resp = client.authorize_redirect('https://b.com/bar')
             self.assertEqual(resp.status_code, 302)
@@ -350,7 +342,6 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
         app = Quart(__name__)
         app.secret_key = '!'
         oauth = OAuth(app)
-        #key = jwk.dumps('secret', 'oct', kid='f')
         params = dict(kty='oct', kid='f')
         key = dict(JsonWebKey.import_key('secret', params))
 
@@ -364,7 +355,6 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
             jwks={'keys': [key]},
         )
 
-        #async with app.test_request_context():
         async with app.test_request_context("/"):
             resp = client.authorize_redirect('https://b.com/bar')
             self.assertEqual(resp.status_code, 302)
@@ -408,11 +398,12 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
         )
         payload = {'code': 'a', 'state': 'b'}
         #async with app.test_request_context(data=payload, method='POST'):
-        async with app.test_request_context(path="/", data=payload, method='POST'):
+        async with app.test_request_context(path='/', data=payload, method='POST'):
             session['_state_dev_b'] = {'data': payload}
             with mock.patch('requests.sessions.Session.send') as send:
                 send.return_value = mock_send_value(get_bearer_token())
                 token = await client.authorize_access_token()
+                print(f"my token: {token}")
                 self.assertEqual(token['access_token'], 'a')
 
     async def test_access_token_with_fetch_token(self):
@@ -439,8 +430,7 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
             resp.status_code = 200
             return resp
 
-        #async with app.test_request_context():
-        async with app.test_request_context("/"):
+        async with app.test_request_context('/'):
             with mock.patch('requests.sessions.Session.send', fake_send):
                 resp = client.get('/api/user')
                 self.assertEqual(resp.text, 'hi')
@@ -486,8 +476,7 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
             resp.status_code = 200
             return resp
 
-        #async with app.test_request_context():
-        async with app.test_request_context("/"):
+        async with app.test_request_context('/'):
             with mock.patch('requests.sessions.Session.send', fake_send):
                 resp = client.get('/api/user', token=expired_token)
                 self.assertEqual(resp.text, 'hi')
@@ -513,8 +502,7 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
             resp.status_code = 200
             return resp
 
-        #async with app.test_request_context():
-        async with app.test_request_context("/"):
+        async with app.test_request_context('/'):
             with mock.patch('requests.sessions.Session.send', fake_send):
                 resp = client.get('/api/user', withhold_token=True)
                 self.assertEqual(resp.text, 'hi')
