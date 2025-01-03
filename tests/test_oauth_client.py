@@ -254,6 +254,7 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
     async def test_oauth2_authorize_via_custom_client(self):
         class CustomRemoteApp(QuartOAuth2App):
             OAUTH_APP_CONFIG = {"authorize_url": "https://i.b/custom"}
+
         self.app.secret_key = "!"
         oauth = OAuth(self.app)
         client = oauth.register(
@@ -399,7 +400,9 @@ class QuartOAuthTest(IsolatedAsyncioTestCase):
                 authorize_url="https://i.b/authorize",
             )
             payload = {"code": "a", "state": "b"}
-            async with self.app.test_request_context(path="/", data=payload, method="POST"):
+            async with self.app.test_request_context(
+                path="/", data=payload, method="POST"
+            ):
                 session["_state_dev_b"] = {"data": payload}
                 with mock.patch("requests.sessions.Session.send") as send:
                     send.return_value = mock_send_value(get_bearer_token())
