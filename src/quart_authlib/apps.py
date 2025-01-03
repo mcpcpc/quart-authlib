@@ -56,7 +56,7 @@ class QuartAppMixin:
 class QuartOAuth1App(QuartAppMixin, OAuth1Mixin, BaseApp):
     client_cls = OAuth1Session
 
-    def authorize_access_token(self, **kwargs):
+    async def authorize_access_token(self, **kwargs):
         """Fetch access token in one step.
 
         :return: A token dict.
@@ -81,7 +81,7 @@ class QuartOAuth1App(QuartAppMixin, OAuth1Mixin, BaseApp):
 class QuartOAuth2App(QuartAppMixin, OAuth2Mixin, OpenIDMixin, BaseApp):
     client_cls = OAuth2Session
 
-    def authorize_access_token(self, **kwargs):
+    async def authorize_access_token(self, **kwargs):
         """Fetch access token in one step.
 
         :return: A token dict.
@@ -97,9 +97,10 @@ class QuartOAuth2App(QuartAppMixin, OAuth2Mixin, OpenIDMixin, BaseApp):
                 "state": request.args.get("state"),
             }
         else:
+            form = await request.form
             params = {
-                "code": request.form.get("code"),
-                "state": request.form.get("state"),
+                "code": form.get("code"),
+                "state": form.get("state"),
             }
 
         claims_options = kwargs.pop("claims_options", None)

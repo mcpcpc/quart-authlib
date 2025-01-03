@@ -8,7 +8,7 @@ A Quart extension for the Authlib library. This is an adoption from the existing
 
 ### PyPI
 
-Install and/or update using pip:
+Install and update using pip:
 
 ```shell
 pip install -U quart-authlib
@@ -61,26 +61,83 @@ The common use case for OAuth is authentication, e.g. let your users log in with
 
 Quart-Authlib OAuth registry can load the configuration from Quart `app.config` automatically. Every key-value pair in `.register` can be omitted. They can be configured in your Quart App configuration. Config keys are formatted as `{name}_{key}` in uppercase. If you register your remote app as `oauth.register('example', ...)`, the config keys would look like:
 
-| Name                     | Key                             |
-| ------------------------ | ------------------------------- |
-| EXAMPLE_CLIENT_ID        | OAuth Consumer Key              |
-| EXAMPLE_CLIENT_SECRET    | OAuth Consumer Secret           |
-| EXAMPLE_ACCESS_TOKEN_URL | URL to fetch OAuth access token |
+| Name                        | Key                                                        |
+| --------------------------- | ---------------------------------------------------------- |
+| EXAMPLE_CLIENT_ID           | OAuth Consumer Key                                         |
+| EXAMPLE_CLIENT_SECRET       | OAuth Consumer Secret                                      |
+| EXAMPLE_ACCESS_TOKEN_URL    | URL to fetch OAuth access token                            |
 
 Here is a full list of the configuration keys:
 
-* `{name}_CLIENT_ID`: Client key of OAuth 1, or Client ID of OAuth 2
-* `{name}_CLIENT_SECRET`: Client secret of OAuth 2, or Client Secret of OAuth 2
-* `{name}_REQUEST_TOKEN_URL`: Request Token endpoint for OAuth 1
-* `{name}_REQUEST_TOKEN_PARAMS`: Extra parameters for Request Token endpoint
-* `{name}_ACCESS_TOKEN_URL`: Access Token endpoint for OAuth 1 and OAuth 2
-* `{name}_ACCESS_TOKEN_PARAMS`: Extra parameters for Access Token endpoint
-* `{name}_AUTHORIZE_URL`: Endpoint for user authorization of OAuth 1 or OAuth 2
-* `{name}_AUTHORIZE_PARAMS`: Extra parameters for Authorization Endpoint.
-* `{name}_API_BASE_URL`: A base URL endpoint to make requests simple
-* `{name}_CLIENT_KWARGS`: Extra keyword arguments for OAuth1Session or OAuth2Session
+* {name}_CLIENT_ID: Client key of OAuth 1, or Client ID of OAuth 2
+* {name}_CLIENT_SECRET: Client secret of OAuth 2, or Client Secret of OAuth 2
+* {name}_REQUEST_TOKEN_URL: Request Token endpoint for OAuth 1
+* {name}_REQUEST_TOKEN_PARAMS: Extra parameters for Request Token endpoint
+* {name}_ACCESS_TOKEN_URL: Access Token endpoint for OAuth 1 and OAuth 2
+* {name}_ACCESS_TOKEN_PARAMS: Extra parameters for Access Token endpoint
+* {name}_AUTHORIZE_URL: Endpoint for user authorization of OAuth 1 or OAuth 2
+* {name}_AUTHORIZE_PARAMS: Extra parameters for Authorization Endpoint.
+* {name}_API_BASE_URL: A base URL endpoint to make requests simple
+* {name}_CLIENT_KWARGS: Extra keyword arguments for OAuth1Session or OAuth2Session
 
 We suggest that you keep ONLY `{name}_CLIENT_ID` and `{name}_CLIENT_SECRET` in your Quart application configuration.
+
+### Routes for Authorization
+
+Routes for authorization should look like:
+
+```python
+from flask import url_for, redirect
+
+@app.route('/login')
+def login():
+    redirect_uri = url_for('authorize', _external=True)
+    return oauth.twitter.authorize_redirect(redirect_uri)
+
+@app.route('/authorize')
+def authorize():
+    token = oauth.twitter.authorize_access_token()
+    resp = oauth.twitter.get('account/verify_credentials.json')
+    resp.raise_for_status()
+    profile = resp.json()
+    # do something with the token and profile
+    return redirect('/')
+```
+
+### Accessing OAuth Resources
+
+Just like above example, we don’t need to pass the `request` parameter, everything is handled by Authlib automatically:
+
+```python
+from flask import render_template
+
+@app.route('/github')
+def show_github_profile():
+    resp = oauth.github.get('user')
+    resp.raise_for_status()
+    profile = resp.json()
+    return render_template('github.html', profile=profile)
+```
+
+In this case, our `fetch_token` could look like:
+
+```python
+from your_project import current_user
+
+def fetch_token(name):
+    if name in OAUTH1_SERVICES:
+        model = OAuth1Token
+    else:
+        model = OAuth2Token
+    token = model.find(
+        name=name,
+        user=current_user,
+    )
+    return token.to_token()
+
+# initialize the OAuth registry with this fetch_token function
+oauth = OAuth(fetch_token=fetch_token)
+```
 
 ### OpenID Connect Client
 
@@ -107,9 +164,14 @@ There should be a `id_token` in the response. Authlib has called *.parse_id_toke
 userinfo = token['userinfo']
 ```
 
+## Examples
+
+See the [examples](docs/examples) directory.
+
+
 ## Contributing
 
-Please create a new [Issue](https://github.com/mcpcpc/quart-authlib/issues/new) or [Pull Request](https://github.com/mcpcpc/quart-authlib/compare) template.
+Please create a new [Issue](https://github.com/mcpcpc/quart-authlib/issues/new) or [Pull Request](https://github.com/mcpcpc/quart-authlib/compare).
 
 ## Resources
 

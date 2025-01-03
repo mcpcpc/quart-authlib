@@ -10,7 +10,7 @@ from .integration import token_update
 from .apps import QuartOAuth1App
 from .apps import QuartOAuth2App
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 
 class OAuth(BaseOAuth):

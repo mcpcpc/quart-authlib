@@ -1,0 +1,4 @@
+from os import getenv
+
+GOOGLE_CLIENT_ID = getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = getenv("GOOGLE_CLIENT_SECRET")
