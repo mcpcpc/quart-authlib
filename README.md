@@ -1,6 +1,6 @@
 # Quart-Authlib
 
-A Quart extension for the Authlib library. This is an adoption from the existing Authlib Flask Client.  Since the primary Authlib developer rejected previous client integration attempts, this project will remain under independent development.
+A Quart extension for the Authlib library. This is an adoption from the existing Authlib Flask Client.  Since previous client integration attempts from other contributors were rejected, this project will remain under independent development.
 
 **Important**: This project is in *early* development. Most features are considered unstable or non-functioning; thus, I would **strongly** advise against using any version less than 1.0 for production environments.
 
